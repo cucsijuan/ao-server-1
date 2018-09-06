@@ -2005,3 +2005,45 @@ Public Function GuildFounder(ByVal GuildIndex As Integer) As String
     
     GuildFounder = guilds(GuildIndex).Fundador
 End Function
+
+Public Sub KillCharInfo(ByVal UserName As String)
+ 
+On Error Resume Next
+     
+    Dim c As String
+    Dim d As String
+    Dim f As String
+    Dim g As String
+    Dim H As Byte
+    Dim i As String
+    Dim j As String
+     
+    c = GetVar(CharPath & UserName & ".chr", "GUILD", "Guild_Id")
+    d = GetVar(GUILDINFOFILE, "GUILD" & c, "Founder")
+    f = GetVar(GUILDINFOFILE, "GUILD" & c, "GuildName")
+    g = GetVar(GUILDPATH & f & "-members.mem", "INIT", "NroMembers")
+    j = GetVar(GUILDPATH & f & "-members.mem", "Members", "Member" & g)
+       
+    If c = vbNullString Then
+        Kill (CharPath & UserName & ".chr")
+    Else
+        If d <> UserName Then
+            guilds(c).ExpulsarMiembro (UserName)
+        Else
+            For H = 1 To g
+               i = GetVar(GUILDPATH & f & "-members.mem", "Members", "Member" & H)
+   
+               If i = UserName Then
+                   Call WriteVar(GUILDPATH & f & "-members.mem", "Members", "Member" & H, j): Call WriteVar(GUILDPATH & f & "-members.mem", "INIT", "NroMembers", g - 1)
+               End If
+                   
+               Call WriteVar(GUILDINFOFILE, "GUILD" & c, "EleccionesAbiertas", "1")
+               Call WriteVar(GUILDINFOFILE, "GUILD" & c, "EleccionesFinalizan", DateAdd("d", 1, Now))
+               Call WriteVar(GUILDPATH & f & "-votaciones.vot", "INIT", "NumVotos", "0")
+           Next H
+             
+       End If
+   
+    End If
+     
+End Sub

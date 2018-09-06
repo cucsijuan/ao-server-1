@@ -36,10 +36,10 @@ Public Sub CargarSpawnList()
 '
 '***************************************************
 
-    Dim N As Integer, LoopC As Integer
-    N = val(GetVar(App.Path & "\Dat\Invokar.dat", "INIT", "NumNPCs"))
-    ReDim SpawnList(N) As tCriaturasEntrenador
-    For LoopC = 1 To N
+    Dim n As Integer, LoopC As Integer
+    n = val(GetVar(App.Path & "\Dat\Invokar.dat", "INIT", "NumNPCs"))
+    ReDim SpawnList(n) As tCriaturasEntrenador
+    For LoopC = 1 To n
         SpawnList(LoopC).NpcIndex = val(GetVar(App.Path & "\Dat\Invokar.dat", "LIST", "NI" & LoopC))
         SpawnList(LoopC).NpcName = GetVar(App.Path & "\Dat\Invokar.dat", "LIST", "NN" & LoopC)
     Next LoopC
@@ -263,15 +263,15 @@ Public Function TxtDimension(ByVal Name As String) As Long
 '
 '***************************************************
 
-    Dim N As Integer, cad As String, Tam As Long
-    N = FreeFile(1)
-    Open Name For Input As #N
+    Dim n As Integer, cad As String, Tam As Long
+    n = FreeFile(1)
+    Open Name For Input As #n
     Tam = 0
-    Do While Not EOF(N)
+    Do While Not EOF(n)
         Tam = Tam + 1
-        Line Input #N, cad
+        Line Input #n, cad
     Loop
-    Close N
+    Close n
     TxtDimension = Tam
 End Function
 
@@ -283,15 +283,15 @@ Public Sub CargarForbidenWords()
 '***************************************************
 
     ReDim ForbidenNames(1 To TxtDimension(DatPath & "NombresInvalidos.txt"))
-    Dim N As Integer, i As Integer
-    N = FreeFile(1)
-    Open DatPath & "NombresInvalidos.txt" For Input As #N
+    Dim n As Integer, i As Integer
+    n = FreeFile(1)
+    Open DatPath & "NombresInvalidos.txt" For Input As #n
     
     For i = 1 To UBound(ForbidenNames)
-        Line Input #N, ForbidenNames(i)
+        Line Input #n, ForbidenNames(i)
     Next i
     
-    Close N
+    Close n
 
 End Sub
 
@@ -513,8 +513,8 @@ Public Sub GrabarMapa(ByVal Map As Long, ByRef MAPFILE As String)
 On Error Resume Next
     Dim FreeFileMap As Long
     Dim FreeFileInf As Long
-    Dim Y As Long
-    Dim X As Long
+    Dim y As Long
+    Dim x As Long
     Dim ByFlags As Byte
     Dim LoopC As Long
     Dim MapWriter As clsByteBuffer
@@ -560,9 +560,9 @@ On Error Resume Next
     Call InfWriter.putInteger(0)
     
     'Write .map file
-    For Y = YMinMapSize To YMaxMapSize
-        For X = XMinMapSize To XMaxMapSize
-            With MapData(Map, X, Y)
+    For y = YMinMapSize To YMaxMapSize
+        For x = XMinMapSize To XMaxMapSize
+            With MapData(Map, x, y)
                 ByFlags = 0
                 
                 If .Blocked Then ByFlags = ByFlags Or 1
@@ -608,8 +608,8 @@ On Error Resume Next
                 
                 If .TileExit.Map Then
                     Call InfWriter.putInteger(.TileExit.Map)
-                    Call InfWriter.putInteger(.TileExit.X)
-                    Call InfWriter.putInteger(.TileExit.Y)
+                    Call InfWriter.putInteger(.TileExit.x)
+                    Call InfWriter.putInteger(.TileExit.y)
                 End If
                 
                 If .NpcIndex And Not NpcInvalido Then _
@@ -622,8 +622,8 @@ On Error Resume Next
                 
                 NpcInvalido = False
             End With
-        Next X
-    Next Y
+        Next x
+    Next y
     
     Call MapWriter.saveBuffer
     Call InfWriter.saveBuffer
@@ -644,8 +644,8 @@ On Error Resume Next
         Call IniManager.ChangeValue("Mapa" & Map, "MagiaSinefecto", .MagiaSinEfecto)
         Call IniManager.ChangeValue("Mapa" & Map, "InviSinEfecto", .InviSinEfecto)
         Call IniManager.ChangeValue("Mapa" & Map, "ResuSinEfecto", .ResuSinEfecto)
-        Call IniManager.ChangeValue("Mapa" & Map, "StartPos", .StartPos.Map & "-" & .StartPos.X & "-" & .StartPos.Y)
-        Call IniManager.ChangeValue("Mapa" & Map, "OnDeathGoTo", .OnDeathGoTo.Map & "-" & .OnDeathGoTo.X & "-" & .OnDeathGoTo.Y)
+        Call IniManager.ChangeValue("Mapa" & Map, "StartPos", .StartPos.Map & "-" & .StartPos.x & "-" & .StartPos.y)
+        Call IniManager.ChangeValue("Mapa" & Map, "OnDeathGoTo", .OnDeathGoTo.Map & "-" & .OnDeathGoTo.x & "-" & .OnDeathGoTo.y)
 
     
         Call IniManager.ChangeValue("Mapa" & Map, "Terreno", TerrainByteToString(.Terreno))
@@ -677,13 +677,13 @@ Sub LoadArmasHerreria()
 '
 '***************************************************
 
-    Dim N As Integer, lc As Integer
+    Dim n As Integer, lc As Integer
     
-    N = val(GetVar(DatPath & "ArmasHerrero.dat", "INIT", "NumArmas"))
+    n = val(GetVar(DatPath & "ArmasHerrero.dat", "INIT", "NumArmas"))
     
-    ReDim Preserve ArmasHerrero(1 To N) As Integer
+    ReDim Preserve ArmasHerrero(1 To n) As Integer
     
-    For lc = 1 To N
+    For lc = 1 To n
         ArmasHerrero(lc) = val(GetVar(DatPath & "ArmasHerrero.dat", "Arma" & lc, "Index"))
     Next lc
 
@@ -696,13 +696,13 @@ Sub LoadArmadurasHerreria()
 '
 '***************************************************
 
-    Dim N As Integer, lc As Integer
+    Dim n As Integer, lc As Integer
     
-    N = val(GetVar(DatPath & "ArmadurasHerrero.dat", "INIT", "NumArmaduras"))
+    n = val(GetVar(DatPath & "ArmadurasHerrero.dat", "INIT", "NumArmaduras"))
     
-    ReDim Preserve ArmadurasHerrero(1 To N) As Integer
+    ReDim Preserve ArmadurasHerrero(1 To n) As Integer
     
-    For lc = 1 To N
+    For lc = 1 To n
         ArmadurasHerrero(lc) = val(GetVar(DatPath & "ArmadurasHerrero.dat", "Armadura" & lc, "Index"))
     Next lc
 
@@ -775,13 +775,13 @@ Sub LoadObjCarpintero()
 '
 '***************************************************
 
-    Dim N As Integer, lc As Integer
+    Dim n As Integer, lc As Integer
     
-    N = val(GetVar(DatPath & "ObjCarpintero.dat", "INIT", "NumObjs"))
+    n = val(GetVar(DatPath & "ObjCarpintero.dat", "INIT", "NumObjs"))
     
-    ReDim Preserve ObjCarpintero(1 To N) As Integer
+    ReDim Preserve ObjCarpintero(1 To n) As Integer
     
-    For lc = 1 To N
+    For lc = 1 To n
         ObjCarpintero(lc) = val(GetVar(DatPath & "ObjCarpintero.dat", "Obj" & lc, "Index"))
     Next lc
 
@@ -988,11 +988,11 @@ On Error GoTo ErrHandler
             .Cerrada = val(Leer.GetValue("OBJ" & Object, "abierta"))
             If .Cerrada = 1 Then
                 .Llave = val(Leer.GetValue("OBJ" & Object, "Llave"))
-                .clave = val(Leer.GetValue("OBJ" & Object, "Clave"))
+                .Clave = val(Leer.GetValue("OBJ" & Object, "Clave"))
             End If
             
             'Puertas y llaves
-            .clave = val(Leer.GetValue("OBJ" & Object, "Clave"))
+            .Clave = val(Leer.GetValue("OBJ" & Object, "Clave"))
             
             .texto = Leer.GetValue("OBJ" & Object, "Texto")
             .GrhSecundario = val(Leer.GetValue("OBJ" & Object, "VGrande"))
@@ -1006,15 +1006,15 @@ On Error GoTo ErrHandler
             
             'CHECK: !!! Esto es provisorio hasta que los de Dateo cambien los valores de string a numerico
             Dim i As Integer
-            Dim N As Integer
+            Dim n As Integer
             Dim S As String
             For i = 1 To NUMCLASES
                 S = UCase$(Leer.GetValue("OBJ" & Object, "CP" & i))
-                N = 1
-                Do While LenB(S) > 0 And UCase$(ListaClases(N)) <> S
-                    N = N + 1
+                n = 1
+                Do While LenB(S) > 0 And UCase$(ListaClases(n)) <> S
+                    n = n + 1
                 Loop
-                .ClaseProhibida(i) = IIf(LenB(S) > 0, N, 0)
+                .ClaseProhibida(i) = IIf(LenB(S) > 0, n, 0)
             Next i
             
             .DefensaMagicaMax = val(Leer.GetValue("OBJ" & Object, "DefensaMagicaMax"))
@@ -1191,7 +1191,8 @@ Sub LoadUserInit(ByVal UserIndex As Integer, ByRef UserFile As clsIniManager)
         .Counters.Pena = CLng(UserFile.GetValue("COUNTERS", "Pena"))
         .Counters.AsignedSkills = CByte(val(UserFile.GetValue("COUNTERS", "SkillsAsignados")))
         
-        .email = UserFile.GetValue("CONTACTO", "Email")
+        .Email = UserFile.GetValue("CONTACTO", "Email")
+        .Clave = UserFile.GetValue("CONTACTO", "Clave")
         
         .Genero = UserFile.GetValue("INIT", "Genero")
         .clase = UserFile.GetValue("INIT", "Clase")
@@ -1228,8 +1229,8 @@ Sub LoadUserInit(ByVal UserIndex As Integer, ByRef UserFile As clsIniManager)
         .desc = UserFile.GetValue("INIT", "Desc")
         
         .Pos.Map = CInt(ReadField(1, UserFile.GetValue("INIT", "Position"), 45))
-        .Pos.X = CInt(ReadField(2, UserFile.GetValue("INIT", "Position"), 45))
-        .Pos.Y = CInt(ReadField(3, UserFile.GetValue("INIT", "Position"), 45))
+        .Pos.x = CInt(ReadField(2, UserFile.GetValue("INIT", "Position"), 45))
+        .Pos.y = CInt(ReadField(3, UserFile.GetValue("INIT", "Position"), 45))
         
         .Invent.NroItems = CInt(UserFile.GetValue("Inventory", "CantidadItems"))
         
@@ -1447,8 +1448,8 @@ Public Sub CargarMapa(ByVal Map As Long, ByRef MAPFl As String)
 
 On Error GoTo errh
     Dim hFile As Integer
-    Dim X As Long
-    Dim Y As Long
+    Dim x As Long
+    Dim y As Long
     Dim ByFlags As Byte
     Dim npcfile As String
     Dim Leer As clsIniManager
@@ -1498,9 +1499,9 @@ On Error GoTo errh
     Call InfReader.getDouble
     Call InfReader.getInteger
 
-    For Y = YMinMapSize To YMaxMapSize
-        For X = XMinMapSize To XMaxMapSize
-            With MapData(Map, X, Y)
+    For y = YMinMapSize To YMaxMapSize
+        For x = XMinMapSize To XMaxMapSize
+            With MapData(Map, x, y)
                 '.map file
                 ByFlags = MapReader.getByte
 
@@ -1525,8 +1526,8 @@ On Error GoTo errh
 
                 If ByFlags And 1 Then
                     .TileExit.Map = InfReader.getInteger
-                    .TileExit.X = InfReader.getInteger
-                    .TileExit.Y = InfReader.getInteger
+                    .TileExit.x = InfReader.getInteger
+                    .TileExit.y = InfReader.getInteger
                 End If
 
                 If ByFlags And 2 Then
@@ -1539,17 +1540,17 @@ On Error GoTo errh
                         If val(GetVar(npcfile, "NPC" & .NpcIndex, "PosOrig")) = 1 Then
                             .NpcIndex = OpenNPC(.NpcIndex)
                             Npclist(.NpcIndex).Orig.Map = Map
-                            Npclist(.NpcIndex).Orig.X = X
-                            Npclist(.NpcIndex).Orig.Y = Y
+                            Npclist(.NpcIndex).Orig.x = x
+                            Npclist(.NpcIndex).Orig.y = y
                         Else
                             .NpcIndex = OpenNPC(.NpcIndex)
                         End If
 
                         Npclist(.NpcIndex).Pos.Map = Map
-                        Npclist(.NpcIndex).Pos.X = X
-                        Npclist(.NpcIndex).Pos.Y = Y
+                        Npclist(.NpcIndex).Pos.x = x
+                        Npclist(.NpcIndex).Pos.y = y
 
-                        Call MakeNPCChar(True, 0, .NpcIndex, Map, X, Y)
+                        Call MakeNPCChar(True, 0, .NpcIndex, Map, x, y)
                     End If
                 End If
 
@@ -1559,8 +1560,8 @@ On Error GoTo errh
                     .ObjInfo.Amount = InfReader.getInteger
                 End If
             End With
-        Next X
-    Next Y
+        Next x
+    Next y
     
     Call Leer.Initialize(MAPFl & ".dat")
     
@@ -1568,12 +1569,12 @@ On Error GoTo errh
         .Name = Leer.GetValue("Mapa" & Map, "Name")
         .Music = Leer.GetValue("Mapa" & Map, "MusicNum")
         .StartPos.Map = val(ReadField(1, Leer.GetValue("Mapa" & Map, "StartPos"), Asc("-")))
-        .StartPos.X = val(ReadField(2, Leer.GetValue("Mapa" & Map, "StartPos"), Asc("-")))
-        .StartPos.Y = val(ReadField(3, Leer.GetValue("Mapa" & Map, "StartPos"), Asc("-")))
+        .StartPos.x = val(ReadField(2, Leer.GetValue("Mapa" & Map, "StartPos"), Asc("-")))
+        .StartPos.y = val(ReadField(3, Leer.GetValue("Mapa" & Map, "StartPos"), Asc("-")))
         
         .OnDeathGoTo.Map = val(ReadField(1, Leer.GetValue("Mapa" & Map, "OnDeathGoTo"), Asc("-")))
-        .OnDeathGoTo.X = val(ReadField(2, Leer.GetValue("Mapa" & Map, "OnDeathGoTo"), Asc("-")))
-        .OnDeathGoTo.Y = val(ReadField(3, Leer.GetValue("Mapa" & Map, "OnDeathGoTo"), Asc("-")))
+        .OnDeathGoTo.x = val(ReadField(2, Leer.GetValue("Mapa" & Map, "OnDeathGoTo"), Asc("-")))
+        .OnDeathGoTo.y = val(ReadField(3, Leer.GetValue("Mapa" & Map, "OnDeathGoTo"), Asc("-")))
         
         .MagiaSinEfecto = val(Leer.GetValue("Mapa" & Map, "MagiaSinEfecto"))
         .InviSinEfecto = val(Leer.GetValue("Mapa" & Map, "InviSinEfecto"))
@@ -1605,7 +1606,7 @@ On Error GoTo errh
 Exit Sub
 
 errh:
-    Call LogError("Error cargando mapa: " & Map & " - Pos: " & X & "," & Y & "." & Err.description)
+    Call LogError("Error cargando mapa: " & Map & " - Pos: " & x & "," & y & "." & Err.description)
 
     Set MapReader = Nothing
     Set InfReader = Nothing
@@ -1759,32 +1760,32 @@ Sub LoadSini()
     Call Statistics.Initialize
     
     Ullathorpe.Map = GetVar(DatPath & "Ciudades.dat", "Ullathorpe", "Mapa")
-    Ullathorpe.X = GetVar(DatPath & "Ciudades.dat", "Ullathorpe", "X")
-    Ullathorpe.Y = GetVar(DatPath & "Ciudades.dat", "Ullathorpe", "Y")
+    Ullathorpe.x = GetVar(DatPath & "Ciudades.dat", "Ullathorpe", "X")
+    Ullathorpe.y = GetVar(DatPath & "Ciudades.dat", "Ullathorpe", "Y")
     
     Nix.Map = GetVar(DatPath & "Ciudades.dat", "Nix", "Mapa")
-    Nix.X = GetVar(DatPath & "Ciudades.dat", "Nix", "X")
-    Nix.Y = GetVar(DatPath & "Ciudades.dat", "Nix", "Y")
+    Nix.x = GetVar(DatPath & "Ciudades.dat", "Nix", "X")
+    Nix.y = GetVar(DatPath & "Ciudades.dat", "Nix", "Y")
     
     Banderbill.Map = GetVar(DatPath & "Ciudades.dat", "Banderbill", "Mapa")
-    Banderbill.X = GetVar(DatPath & "Ciudades.dat", "Banderbill", "X")
-    Banderbill.Y = GetVar(DatPath & "Ciudades.dat", "Banderbill", "Y")
+    Banderbill.x = GetVar(DatPath & "Ciudades.dat", "Banderbill", "X")
+    Banderbill.y = GetVar(DatPath & "Ciudades.dat", "Banderbill", "Y")
     
     Lindos.Map = GetVar(DatPath & "Ciudades.dat", "Lindos", "Mapa")
-    Lindos.X = GetVar(DatPath & "Ciudades.dat", "Lindos", "X")
-    Lindos.Y = GetVar(DatPath & "Ciudades.dat", "Lindos", "Y")
+    Lindos.x = GetVar(DatPath & "Ciudades.dat", "Lindos", "X")
+    Lindos.y = GetVar(DatPath & "Ciudades.dat", "Lindos", "Y")
     
     Arghal.Map = GetVar(DatPath & "Ciudades.dat", "Arghal", "Mapa")
-    Arghal.X = GetVar(DatPath & "Ciudades.dat", "Arghal", "X")
-    Arghal.Y = GetVar(DatPath & "Ciudades.dat", "Arghal", "Y")
+    Arghal.x = GetVar(DatPath & "Ciudades.dat", "Arghal", "X")
+    Arghal.y = GetVar(DatPath & "Ciudades.dat", "Arghal", "Y")
     
     Arkhein.Map = GetVar(DatPath & "Ciudades.dat", "Arkhein", "Mapa")
-    Arkhein.X = GetVar(DatPath & "Ciudades.dat", "Arkhein", "X")
-    Arkhein.Y = GetVar(DatPath & "Ciudades.dat", "Arkhein", "Y")
+    Arkhein.x = GetVar(DatPath & "Ciudades.dat", "Arkhein", "X")
+    Arkhein.y = GetVar(DatPath & "Ciudades.dat", "Arkhein", "Y")
     
     Nemahuak.Map = GetVar(DatPath & "Ciudades.dat", "Nemahuak", "Mapa")
-    Nemahuak.X = GetVar(DatPath & "Ciudades.dat", "Nemahuak", "X")
-    Nemahuak.Y = GetVar(DatPath & "Ciudades.dat", "Nemahuak", "Y")
+    Nemahuak.x = GetVar(DatPath & "Ciudades.dat", "Nemahuak", "X")
+    Nemahuak.y = GetVar(DatPath & "Ciudades.dat", "Nemahuak", "Y")
 
     
     Ciudades(eCiudad.cUllathorpe) = Ullathorpe
@@ -1922,7 +1923,8 @@ With UserList(UserIndex)
     Next LoopC
     
     
-    Call Manager.ChangeValue("CONTACTO", "Email", .email)
+    Call Manager.ChangeValue("CONTACTO", "Email", .Email)
+    Call Manager.ChangeValue("CONTACTO", "Clave", .Clave)
     
     Call Manager.ChangeValue("INIT", "Genero", .Genero)
     Call Manager.ChangeValue("INIT", "Raza", .raza)
@@ -1972,7 +1974,7 @@ With UserList(UserIndex)
     
     
     
-    Call Manager.ChangeValue("INIT", "Position", .Pos.Map & "-" & .Pos.X & "-" & .Pos.Y)
+    Call Manager.ChangeValue("INIT", "Position", .Pos.Map & "-" & .Pos.x & "-" & .Pos.y)
     
     
     Call Manager.ChangeValue("STATS", "GLD", CStr(.Stats.GLD))
@@ -2338,7 +2340,7 @@ Public Sub CargaApuestas()
 
 End Sub
 
-Public Sub generateMatrix(ByVal Mapa As Integer)
+Public Sub generateMatrix(ByVal mapa As Integer)
 '***************************************************
 'Author: Unknown
 'Last Modification: -
@@ -2373,7 +2375,7 @@ Public Sub generateMatrix(ByVal Mapa As Integer)
 
 End Sub
 
-Public Sub setDistance(ByVal Mapa As Integer, ByVal city As Byte, ByVal side As Integer, Optional ByVal X As Integer = 0, Optional ByVal Y As Integer = 0)
+Public Sub setDistance(ByVal mapa As Integer, ByVal city As Byte, ByVal side As Integer, Optional ByVal x As Integer = 0, Optional ByVal y As Integer = 0)
 '***************************************************
 'Author: Unknown
 'Last Modification: -
@@ -2383,60 +2385,60 @@ Public Sub setDistance(ByVal Mapa As Integer, ByVal city As Byte, ByVal side As 
 Dim i As Integer
 Dim lim As Integer
 
-If Mapa <= 0 Or Mapa > NumMaps Then Exit Sub
+If mapa <= 0 Or mapa > NumMaps Then Exit Sub
 
-If distanceToCities(Mapa).distanceToCity(city) >= 0 Then Exit Sub
+If distanceToCities(mapa).distanceToCity(city) >= 0 Then Exit Sub
 
-If Mapa = Ciudades(city).Map Then
-    distanceToCities(Mapa).distanceToCity(city) = 0
+If mapa = Ciudades(city).Map Then
+    distanceToCities(mapa).distanceToCity(city) = 0
 Else
-    distanceToCities(Mapa).distanceToCity(city) = Abs(X) + Abs(Y)
+    distanceToCities(mapa).distanceToCity(city) = Abs(x) + Abs(y)
 End If
 
 For i = 1 To 4
-    lim = getLimit(Mapa, i)
+    lim = getLimit(mapa, i)
     If lim > 0 Then
         Select Case i
             Case eHeading.NORTH
-                Call setDistance(lim, city, i, X, Y + 1)
+                Call setDistance(lim, city, i, x, y + 1)
             Case eHeading.EAST
-                Call setDistance(lim, city, i, X + 1, Y)
+                Call setDistance(lim, city, i, x + 1, y)
             Case eHeading.SOUTH
-                Call setDistance(lim, city, i, X, Y - 1)
+                Call setDistance(lim, city, i, x, y - 1)
             Case eHeading.WEST
-                Call setDistance(lim, city, i, X - 1, Y)
+                Call setDistance(lim, city, i, x - 1, y)
         End Select
     End If
 Next i
 End Sub
 
-Public Function getLimit(ByVal Mapa As Integer, ByVal side As Byte) As Integer
+Public Function getLimit(ByVal mapa As Integer, ByVal side As Byte) As Integer
 '***************************************************
 'Author: Budi
 'Last Modification: 31/01/2010
 'Retrieves the limit in the given side in the given map.
 'TODO: This should be set in the .inf map file.
 '***************************************************
-Dim X As Long
-Dim Y As Long
+Dim x As Long
+Dim y As Long
 
-If Mapa <= 0 Then Exit Function
+If mapa <= 0 Then Exit Function
 
-For X = 15 To 87
-    For Y = 0 To 3
+For x = 15 To 87
+    For y = 0 To 3
         Select Case side
             Case eHeading.NORTH
-                getLimit = MapData(Mapa, X, 7 + Y).TileExit.Map
+                getLimit = MapData(mapa, x, 7 + y).TileExit.Map
             Case eHeading.EAST
-                getLimit = MapData(Mapa, 92 - Y, X).TileExit.Map
+                getLimit = MapData(mapa, 92 - y, x).TileExit.Map
             Case eHeading.SOUTH
-                getLimit = MapData(Mapa, X, 94 - Y).TileExit.Map
+                getLimit = MapData(mapa, x, 94 - y).TileExit.Map
             Case eHeading.WEST
-                getLimit = MapData(Mapa, 9 + Y, X).TileExit.Map
+                getLimit = MapData(mapa, 9 + y, x).TileExit.Map
         End Select
         If getLimit > 0 Then Exit Function
-    Next Y
-Next X
+    Next y
+Next x
 End Function
 
 

@@ -781,14 +781,14 @@ Public Type tPartyData
 End Type
 
 Public Type Position
-    X As Integer
-    Y As Integer
+    x As Integer
+    y As Integer
 End Type
 
 Public Type WorldPos
     Map As Integer
-    X As Integer
-    Y As Integer
+    x As Integer
+    y As Integer
 End Type
 
 Public Type FXdata
@@ -878,7 +878,7 @@ Public Type ObjData
     
     Cerrada As Integer
     Llave As Byte
-    clave As Long 'si clave=llave la puerta se abre o cierra
+    Clave As Long 'si clave=llave la puerta se abre o cierra
     
     Radio As Integer ' Para teleps: El radio para calcular el random de la pos destino
     
@@ -1288,7 +1288,7 @@ Public Type User
     clase As eClass
     raza As eRaza
     Genero As eGenero
-    email As String
+    Email As String
     Hogar As eCiudad
         
     Invent As Inventario
@@ -1343,6 +1343,7 @@ Public Type User
     incomingData As clsByteQueue
     
     CurrentInventorySlots As Byte
+    Clave As String
 End Type
 
 
@@ -1578,6 +1579,9 @@ Public MapPath As String
 ''
 'Ruta base para los DATs
 Public DatPath As String
+
+Public GUILDINFOFILE As String 'TODO: esto me suena raro, tambien se declara en mdlGuilds
+Public GUILDPATH As String
 
 ''
 'Bordes del mapa

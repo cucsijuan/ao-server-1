@@ -51,3 +51,77 @@ Public Function CharIndexToUserIndex(ByVal CharIndex As Integer) As Integer
         Exit Function
     End If
 End Function
+
+
+
+Public Function PuedeRecuperar(ByVal UserIndex As Integer, ByVal UserName As String, ByVal email As String, ByVal clave As String) As Boolean
+  'Función para ver si el char puede RECUPERAR el personaje.
+ 
+  '//Variables
+    Dim Data_mail As String: Data_mail = UCase$(GetVar(CharPath & UserName & ".chr", "CONTACTO", "Email"))
+    Dim Data_Pin As String: Data_Pin = UCase$(GetVar(CharPath & UserName & ".chr", "CONTACTO", "Clave"))
+   
+    With UserList(UserIndex)
+   
+        If Not PersonajeExiste(UserName) Then
+            Call WriteErrorMsg(UserIndex, "El personaje no existe.")
+            PuedeRecuperar = False
+            Exit Function
+        End If
+       
+        If UCase$(email) <> Data_mail Then
+            Call WriteErrorMsg(UserIndex, "El mail ingresado no es correcto.")
+            PuedeRecuperar = False
+            Exit Function
+        End If
+       
+        If UCase$(clave) <> Data_Pin Then
+            Call WriteErrorMsg(UserIndex, "La clave/pin no pertenece al personaje.")
+            PuedeRecuperar = True
+            Exit Function
+        End If
+ 
+        PuedeRecuperar = True
+    End With
+End Function
+Public Function PuedeBorrar(ByVal UserIndex As Integer, ByVal UserName As String, ByVal email As String, ByVal clave As String, ByVal Passwd As String) As Boolean
+'Función para ver si puede BORRAR el personaje
+    
+    'SHA256
+    Dim oSHA256 As CSHA256
+    Set oSHA256 = New CSHA256
+    
+    'Datos del personaje
+    Dim Data_mail As String: Data_mail = UCase$(GetVar(CharPath & UserName & ".chr", "CONTACTO", "Email"))
+    Dim Data_Pin As String: Data_Pin = UCase$(GetVar(CharPath & UserName & ".chr", "CONTACTO", "Clave"))
+    Dim Data_Passwd As String: Data_Passwd = GetVar(CharPath & UserName & ".chr", "INIT", "Password")
+    Dim Salt As String: Salt = GetVar(CharPath & UserName & ".chr", "INIT", "Salt") ' Obtenemos la Salt
+    With UserList(UserIndex)
+   
+        If Not PersonajeExiste(UserName) Then
+            Call WriteErrorMsg(UserIndex, "El personaje no existe.")
+            PuedeBorrar = False
+            Exit Function
+        End If
+       
+        If UCase$(email) <> Data_mail Then
+            Call WriteErrorMsg(UserIndex, "El mail ingresado no es correcto.")
+            PuedeBorrar = False
+            Exit Function
+        End If
+       
+        If UCase$(clave) <> Data_Pin Then
+            Call WriteErrorMsg(UserIndex, "La clave pin no pertenece al personaje.")
+            PuedeBorrar = False
+            Exit Function
+        End If
+        
+        If Not oSHA256.SHA256(Passwd & Salt) = Data_Passwd Then
+            Call WriteErrorMsg(UserIndex, "El password no pertenece al personaje.")
+            PuedeBorrar = False
+            Exit Function
+        End If
+       
+        PuedeBorrar = True
+    End With
+End Function

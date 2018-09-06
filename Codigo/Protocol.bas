@@ -289,6 +289,8 @@ Private Enum ClientPacketID
     StopSharingNpc = 127
     Consultation = 128
     moveItem = 129
+    RecoverChar = 130             'Recuperar personaje
+    KillChar = 131                'Borrar personaje
 End Enum
 
 ''
@@ -367,7 +369,9 @@ On Error Resume Next
     'Does the packet requires a logged user??
     If Not (packetID = ClientPacketID.ThrowDices _
       Or packetID = ClientPacketID.LoginExistingChar _
-      Or packetID = ClientPacketID.LoginNewChar) Then
+      Or packetID = ClientPacketID.LoginNewChar _
+      Or packetID = ClientPacketID.RecoverChar _
+      Or packetID = ClientPacketID.KillChar) Then
         
         'Is the user actually logged?
         If Not UserList(UserIndex).flags.UserLogged Then
@@ -775,6 +779,12 @@ On Error Resume Next
         
         Case ClientPacketID.moveItem
             Call HandleMoveItem(UserIndex)
+        
+        Case ClientPacketID.RecoverChar
+            Call HandleRecoverChar(UserIndex)
+           
+        Case ClientPacketID.KillChar
+            Call HandleKillChar(UserIndex)
 
         Case Else
             'ERROR : Abort!
@@ -1497,7 +1507,7 @@ Private Sub HandleLoginNewChar(ByVal UserIndex As Integer)
 'Last Modification: 05/17/06
 '
 '***************************************************
-    If UserList(UserIndex).incomingData.length < 15 Then
+    If UserList(UserIndex).incomingData.length < 18 Then
         Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
         Exit Sub
     End If
@@ -1519,6 +1529,7 @@ On Error GoTo ErrHandler
     Dim Class As eClass
     Dim Head As Integer
     Dim mail As String
+    Dim clave As String
     
     If PuedeCrearPersonajes = 0 Then
         Call WriteErrorMsg(UserIndex, "La creación de personajes en este servidor se ha deshabilitado.")
@@ -1556,11 +1567,12 @@ On Error GoTo ErrHandler
     Head = buffer.ReadInteger
     mail = buffer.ReadASCIIString()
     homeland = buffer.ReadByte()
+    clave = buffer.ReadASCIIString()
         
     If Not VersionOK(version) Then
         Call WriteErrorMsg(UserIndex, "Esta versión del juego es obsoleta, la versión correcta es la " & ULTIMAVERSION & ". La misma se encuentra disponible en www.argentumonline.com.ar")
     Else
-        Call ConnectNewUser(UserIndex, UserName, Password, race, gender, Class, mail, homeland, Head)
+        Call ConnectNewUser(UserIndex, UserName, Password, race, gender, Class, mail, homeland, Head, clave)
     End If
 
     'If we got here then packet is complete, copy data back to original queue
@@ -18855,6 +18867,133 @@ With UserList(UserIndex)
     
 End With
 
+End Sub
+Public Sub HandleRecoverChar(ByVal UserIndex As Integer)
+'***************************************************
+'Author: Lautaro (Shak)
+'Last Modification:
+'Recuperación de personajes teniendo en cuenta el "nick" , "email" & "pin"
+'***************************************************
+    If UserList(UserIndex).incomingData.length < 9 Then
+        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        Exit Sub
+    End If
+ 
+On Error GoTo ErrHandler
+    With UserList(UserIndex)
+        'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
+        Dim buffer As clsByteQueue: Set buffer = New clsByteQueue
+        Call buffer.CopyBuffer(.incomingData)
+       
+        'Remove packet ID
+        Call buffer.ReadByte
+       
+        Dim UserName As String
+        Dim email As String
+        Dim Pin As String
+        
+        'SHA256
+        Dim oSHA256 As CSHA256
+        Set oSHA256 = New CSHA256
+        Dim Salt As String
+        Dim newPass As String
+       
+        UserName = buffer.ReadASCIIString()
+        email = buffer.ReadASCIIString()
+        Pin = buffer.ReadASCIIString()
+       
+        'Datos del personaje
+        Dim Data_NewPasswd As String
+       
+        If PuedeRecuperar(UserIndex, UserName, email, Pin) Then
+            'Si el personaje esta logueado lo deslogueamos.
+            If NameIndex(UserName) > 0 Then
+                Call CloseSocket(NameIndex(UserName))
+            End If
+               
+            Salt = RandomString(10)
+            newPass = GeneratePassword
+            Call WriteVar(CharPath & UserName & ".chr", "INIT", "Password", oSHA256.SHA256(newPass & Salt))
+            Call WriteVar(CharPath & UCase$(UserName) & ".chr", "INIT", "Salt", Salt) 'Grabamos la Salt
+           
+            'Cargamos la nueva contraseña del personaje.
+            Data_NewPasswd = UCase$(GetVar(CharPath & UserName & ".chr", "INIT", "Password"))
+            Call WriteErrorMsg(UserIndex, "El nuevo password de su personaje es " & newPass & "")
+        End If
+       
+        'If we got here then packet is complete, copy data back to original queue
+        Call .incomingData.CopyBuffer(buffer)
+    End With
+   
+ErrHandler:
+    Dim error As Long
+    error = Err.Number
+On Error GoTo 0
+   
+    'Destroy auxiliar buffer
+    Set buffer = Nothing
+   
+    If error <> 0 Then _
+        Err.Raise error
+End Sub
+ 
+Public Sub HandleKillChar(ByVal UserIndex As Integer)
+'***************************************************
+'Author: Lautaro (Shak)
+'Last Modification:
+'BORRADO de personajes teniendo en cuenta el "nick" , "email" , "pin" y su "Passwd"
+'***************************************************
+    If UserList(UserIndex).incomingData.length < 12 Then
+        Err.Raise UserList(UserIndex).incomingData.NotEnoughDataErrCode
+        Exit Sub
+    End If
+ 
+On Error GoTo ErrHandler
+    With UserList(UserIndex)
+        'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
+        Dim buffer As clsByteQueue: Set buffer = New clsByteQueue
+        Call buffer.CopyBuffer(.incomingData)
+       
+        'Remove packet ID
+        Call buffer.ReadByte
+       
+        Dim UserName As String
+        Dim email As String
+        Dim Pin As String
+        Dim Passwd As String
+ 
+       
+        UserName = buffer.ReadASCIIString()
+        email = buffer.ReadASCIIString()
+        Pin = buffer.ReadASCIIString()
+        Passwd = buffer.ReadASCIIString()
+       
+            If PuedeBorrar(UserIndex, UserName, email, Pin, Passwd) Then
+                'Si el personaje esta logueado no lo dejamos borrarlo.
+                If NameIndex(UserName) > 0 Then
+                    Call WriteErrorMsg(UserIndex, "No puedes borrar un personaje logueado.")
+                Else
+                    Call WriteErrorMsg(UserIndex, "Personaje borrado")
+                    Call CloseSocket(UserIndex)
+                    Call KillCharInfo(UserName)
+                    Call BorrarUsuario(UserName)
+                End If
+            End If
+       
+        'If we got here then packet is complete, copy data back to original queue
+        Call .incomingData.CopyBuffer(buffer)
+    End With
+   
+ErrHandler:
+    Dim error As Long
+    error = Err.Number
+On Error GoTo 0
+   
+    'Destroy auxiliar buffer
+    Set buffer = Nothing
+   
+    If error <> 0 Then _
+        Err.Raise error
 End Sub
 
 Public Function PrepareMessagePalabrasMagicas(ByVal SpellIndex As Byte, ByVal CharIndex As Integer) As String

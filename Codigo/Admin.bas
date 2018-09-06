@@ -117,7 +117,7 @@ On Error Resume Next
        'OJO
        If Npclist(i).flags.NPCActive Then
             
-            If InMapBounds(Npclist(i).Orig.Map, Npclist(i).Orig.X, Npclist(i).Orig.Y) And Npclist(i).Numero = Guardias Then
+            If InMapBounds(Npclist(i).Orig.Map, Npclist(i).Orig.x, Npclist(i).Orig.y) And Npclist(i).Numero = Guardias Then
                     MiNPC = Npclist(i)
                     Call QuitarNPC(i)
                     Call ReSpawnNpc(MiNPC)
@@ -151,14 +151,14 @@ On Error Resume Next
     
     Call ReSpawnOrigPosNpcs 'respawn de los guardias en las pos originales
     
-    Dim j As Integer, k As Integer
+    Dim j As Integer, K As Integer
     
     For j = 1 To NumMaps
-        If MapInfo(j).BackUp = 1 Then k = k + 1
+        If MapInfo(j).BackUp = 1 Then K = K + 1
     Next j
     
     FrmStat.ProgressBar1.min = 0
-    FrmStat.ProgressBar1.max = k
+    FrmStat.ProgressBar1.max = K
     FrmStat.ProgressBar1.value = 0
     
     For loopX = 1 To NumMaps
@@ -204,7 +204,7 @@ Public Sub Encarcelar(ByVal UserIndex As Integer, ByVal Minutos As Long, Optiona
 
     UserList(UserIndex).Counters.Pena = Minutos * 60
     
-    Call WarpUserChar(UserIndex, Prision.Map, Prision.X, Prision.Y, True)
+    Call WarpUserChar(UserIndex, Prision.Map, Prision.x, Prision.y, True)
     
     If LenB(GmName) = 0 Then
         Call WriteConsoleMsg(UserIndex, "Has sido encarcelado, deberás permanecer en la cárcel " & Minutos & " minutos.", FontTypeNames.FONTTYPE_INFO)
@@ -358,11 +358,11 @@ Public Function BanIpQuita(ByVal ip As String) As Boolean
 
 On Error Resume Next
 
-    Dim N As Long
+    Dim n As Long
     
-    N = BanIpBuscar(ip)
-    If N > 0 Then
-        BanIps.Remove N
+    n = BanIpBuscar(ip)
+    If n > 0 Then
+        BanIps.Remove n
         BanIpGuardar
         BanIpQuita = True
     Else
@@ -554,4 +554,10 @@ Public Sub BanCharacter(ByVal bannerUserIndex As Integer, ByVal UserName As Stri
         End If
     End With
 End Sub
-
+Public Function GeneratePassword() As String
+    Dim str As String
+ 
+    str = Chr$(97 + Rnd() * 862150000 Mod 26)
+       
+    GeneratePassword = RandomNumber(0, 9) & str & RandomNumber(10, 20) & str & RandomNumber(0, 9) & str & str & RandomNumber(0, 9)
+End Function
