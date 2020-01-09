@@ -83,13 +83,13 @@ Public Sub InitAreas()
     Next LoopC
     
     For LoopC = 1 To 100
-        PosToArea(LoopC) = LoopC \ 11
+        PosToArea(LoopC) = LoopC \ 12
     Next LoopC
     
     For LoopC = 1 To 100
         For loopX = 1 To 100
             'Usamos 121 IDs de area para saber si pasasamos de area "mas rapido"
-            AreasInfo(LoopC, loopX) = (LoopC \ 11 + 1) * (loopX \ 11 + 1)
+            AreasInfo(LoopC, loopX) = (LoopC \ 12 + 1) * (loopX \ 12 + 1)
         Next loopX
     Next LoopC
 
@@ -168,7 +168,7 @@ Public Sub CheckUpdateNeededUser(ByVal Userindex As Integer, _
         
         If Head = eHeading.NORTH Then
             MaxY = MinY - 1
-            MinY = MinY - 11
+            MinY = MinY - 12
             MaxX = MinX + 32
             .AreasInfo.MinX = CInt(MinX)
             .AreasInfo.MinY = CInt(MinY)
@@ -182,7 +182,7 @@ Public Sub CheckUpdateNeededUser(ByVal Userindex As Integer, _
         
         ElseIf Head = eHeading.WEST Then
             MaxX = MinX - 1
-            MinX = MinX - 11
+            MinX = MinX - 12
             MaxY = MinY + 32
             .AreasInfo.MinX = CInt(MinX)
             .AreasInfo.MinY = CInt(MinY)
@@ -196,10 +196,10 @@ Public Sub CheckUpdateNeededUser(ByVal Userindex As Integer, _
            
         ElseIf Head = USER_NUEVO Then
             'Esto pasa por cuando cambiamos de mapa o logeamos...
-            MinY = ((.Pos.Y \ 11) - 1) * 11
+            MinY = ((.Pos.Y \ 12) - 1) * 12
             MaxY = MinY + 32
             
-            MinX = ((.Pos.X \ 11) - 1) * 11
+            MinX = ((.Pos.X \ 12) - 1) * 12
             MaxX = MinX + 32
             
             .AreasInfo.MinX = CInt(MinX)
@@ -306,11 +306,11 @@ Public Sub CheckUpdateNeededUser(ByVal Userindex As Integer, _
         Next X
         
         'Precalculados :P
-        TempInt = .Pos.X \ 11
+        TempInt = .Pos.X \ 12
         .AreasInfo.AreaReciveX = AreasRecive(TempInt)
         .AreasInfo.AreaPerteneceX = 2 ^ TempInt
         
-        TempInt = .Pos.Y \ 11
+        TempInt = .Pos.Y \ 12
         .AreasInfo.AreaReciveY = AreasRecive(TempInt)
         .AreasInfo.AreaPerteneceY = 2 ^ TempInt
         
@@ -339,7 +339,7 @@ Public Sub CheckUpdateNeededNpc(ByVal NpcIndex As Integer, ByVal Head As Byte)
         
         If Head = eHeading.NORTH Then
             MaxY = MinY - 1
-            MinY = MinY - 11
+            MinY = MinY - 12
             MaxX = MinX + 32
             .AreasInfo.MinX = CInt(MinX)
             .AreasInfo.MinY = CInt(MinY)
@@ -353,7 +353,7 @@ Public Sub CheckUpdateNeededNpc(ByVal NpcIndex As Integer, ByVal Head As Byte)
         
         ElseIf Head = eHeading.WEST Then
             MaxX = MinX - 1
-            MinX = MinX - 11
+            MinX = MinX - 12
             MaxY = MinY + 32
             .AreasInfo.MinX = CInt(MinX)
             .AreasInfo.MinY = CInt(MinY)
@@ -367,10 +367,10 @@ Public Sub CheckUpdateNeededNpc(ByVal NpcIndex As Integer, ByVal Head As Byte)
            
         ElseIf Head = USER_NUEVO Then
             'Esto pasa por cuando cambiamos de mapa o logeamos...
-            MinY = ((.Pos.Y \ 11) - 1) * 11
+            MinY = ((.Pos.Y \ 12) - 1) * 12
             MaxY = MinY + 32
             
-            MinX = ((.Pos.X \ 11) - 1) * 11
+            MinX = ((.Pos.X \ 12) - 1) * 12
             MaxX = MinX + 32
             
             .AreasInfo.MinX = CInt(MinX)
@@ -396,11 +396,11 @@ Public Sub CheckUpdateNeededNpc(ByVal NpcIndex As Integer, ByVal Head As Byte)
         End If
         
         'Precalculados :P
-        TempInt = .Pos.X \ 11
+        TempInt = .Pos.X \ 12
         .AreasInfo.AreaReciveX = AreasRecive(TempInt)
         .AreasInfo.AreaPerteneceX = 2 ^ TempInt
             
-        TempInt = .Pos.Y \ 11
+        TempInt = .Pos.Y \ 12
         .AreasInfo.AreaReciveY = AreasRecive(TempInt)
         .AreasInfo.AreaPerteneceY = 2 ^ TempInt
         
