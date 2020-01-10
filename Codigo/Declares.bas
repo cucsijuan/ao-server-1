@@ -1780,59 +1780,28 @@ Public MapPath                            As String
 Public DatPath                            As String
 
 ''
-'Bordes del mapa
-Public MinXBorder                         As Byte
-
-Public MaxXBorder                         As Byte
-
-Public MinYBorder                         As Byte
-
-Public MaxYBorder                         As Byte
-
-''
 'Numero de usuarios actual
 Public NumUsers                           As Integer
-
 Public LastUser                           As Integer
-
 Public LastChar                           As Integer
-
 Public NumChars                           As Integer
-
 Public LastNPC                            As Integer
-
 Public NumNPCs                            As Integer
-
 Public NumFX                              As Integer
-
 Public NumMaps                            As Integer
-
 Public NumObjDatas                        As Integer
-
 Public NumeroHechizos                     As Integer
-
 Public AllowMultiLogins                   As Boolean
-
 Public IdleLimit                          As Integer
-
 Public MaxUsers                           As Integer
-
 Public HideMe                             As Boolean
-
 Public LastBackup                         As String
-
 Public Minutos                            As String
-
 Public haciendoBK                         As Boolean
-
 Public PuedeCrearPersonajes               As Integer
-
 Public ServerSoloGMs                      As Integer
-
 Public NumRecords                         As Integer
-
 Public EnPausa                            As Boolean
-
 Public EnTesting                          As Boolean
 
 ' Sistema de Happy Hour (adaptado de 0.13.5)

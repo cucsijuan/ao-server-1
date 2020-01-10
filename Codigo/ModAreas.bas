@@ -26,6 +26,12 @@ Attribute VB_Name = "ModAreas"
 
 Option Explicit
 
+'Bordes del mapa
+Public MinXBorder                         As Byte
+Public MaxXBorder                         As Byte
+Public MinYBorder                         As Byte
+Public MaxYBorder                         As Byte
+
 'Tamano del mapa
 Public Const XMaxMapSize                As Byte = 100
 Public Const XMinMapSize                As Byte = 1
