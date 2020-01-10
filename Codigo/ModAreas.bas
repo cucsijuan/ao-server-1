@@ -26,7 +26,24 @@ Attribute VB_Name = "ModAreas"
 
 Option Explicit
 
-'>>>>>>AREAS>>>>>AREAS>>>>>>>>AREAS>>>>>>>AREAS>>>>>>>>>>
+'Tamano del mapa
+Public Const XMaxMapSize                As Byte = 100
+Public Const XMinMapSize                As Byte = 1
+Public Const YMaxMapSize                As Byte = 100
+Public Const YMinMapSize                As Byte = 1
+
+'Tamano del tileset
+Public Const TileSizeX                  As Byte = 32
+Public Const TileSizeY                  As Byte = 32
+
+'Tamano en Tiles de la pantalla de visualizacion
+Public Const XWindow                    As Byte = 17
+Public Const YWindow                    As Byte = 13
+
+'Damos a los NPCs el mismo rango de vision que un PJ
+Public Const RANGO_VISION_X  As Byte = 12
+Public Const RANGO_VISION_Y  As Byte = 9
+
 Public Type AreaInfo
 
     AreaPerteneceX As Integer
@@ -55,15 +72,11 @@ Public Const USER_NUEVO               As Byte = 255
 'Cuidado:
 ' LAS AREAS ESTaN HARDCODEADAS!!!
 Private CurDay                        As Byte
-
 Private CurHour                       As Byte
 
 Private AreasInfo(1 To 100, 1 To 100) As Byte
-
 Private PosToArea(1 To 100)           As Byte
-
 Private AreasRecive(10)               As Integer
-
 Public ConnGroups()                   As ConnGroup
 
 Public Sub InitAreas()
